@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "492984071752",
+    "firebase_url": "https://herodb-c7534.firebaseio.com",
+    "project_id": "herodb-c7534",
+    "storage_bucket": "herodb-c7534.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:492984071752:android:ba51d8bc93a0e7cf",
+        "android_client_info": {
+          "package_name": "com.aparmentesreact"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "492984071752-870mofe26fujenhbno3b4jql3toaq5kd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKT0EovS5m3R-IDpoXudVN5lfu_303GcI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
