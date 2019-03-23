@@ -9,11 +9,14 @@ import {
     StyleSheet,
     View,
     ToastAndroid,
+    ScrollView
 } from 'react-native';
-import CreateHeroView from './CreateHeroView';
-import ListHeroesView from './ListHeroesView';
+import CreatePagoView from './CreatePagoView';  // CreateHeroView
+import ListPagosView from './ListPagosView'; // ListHeroesView
+import Opciones from './Opciones'
 import { EventEmitter } from 'events';
-import { getAllHeroes } from '../controllers/HeroController';
+import { getAllPagos } from '../controllers/PagoController';
+import { Header, Input, SearchBar, Button } from 'react-native-elements';
 
 export default class HomeView extends Component<Props> {
 
@@ -21,45 +24,49 @@ export default class HomeView extends Component<Props> {
         super(props);
 
         this.state = {
-            heroes: [],
+            pagos: [],
         };
 
         this.event = new EventEmitter();
     }
 
     componentWillMount() {
-        this.initListHeroes();
-        this.event.addListener('onCreateHero', () => this.initListHeroes());
-        this.event.addListener('onUpdateHero', () => this.initListHeroes());
-        this.event.addListener('onDeleteHero', () => this.initListHeroes());
+        this.initListPagos();
+        this.event.addListener('onCreatePago', () => this.initListPagos());
+        this.event.addListener('onUpdatePago', () => this.initListPagos());
+        this.event.addListener('onDeletePago', () => this.initListPagos());
     }
 
     componentWillUnmount() {
         this.event.removeAllListeners();
     }
 
-    initListHeroes = () => {
-        getAllHeroes().then(({ result, message }) => this.setState({ heroes : result }));
+    initListPagos = () => {
+        getAllPagos().then(({ result, message }) => this.setState({ pagos: result }));
     }
 
- 
+    
+
     render() {
         return (
-            <View style={styles.container}>
-                <CreateHeroView event={this.event}/>
-                <ListHeroesView heroes={this.state.heroes} event={this.event}/>
+            <View style={{ backgroundColor: '#F8FBFD', flex: 1 }}>
+                <Header
+                    placement="left"
+                    leftComponent={{ text: '         Registrar Pago', style: { color: '#fff', fontSize: 19 } }}
+                    centerComponent={{ icon: 'add-circle', color: '#fff', onPress: () => this.props.navigation.navigate('CreatePagoView')}}
+                    rightComponent={{ icon: 'menu', color: '#fff', onPress: () => this.props.navigation.navigate('Opciones')}}
+                    containerStyle={{ backgroundColor: '#2B2F33',marginBottom:50 }}
+                    leftContainerStyle={{ marginLeft: 65 }}
+                    rightContainerStyle={{ marginRight: 18 }}
+                    centerContainerStyle={{ marginLeft: 45 }}
+                />
+                <ScrollView>
+                    <View>
+                        <ListPagosView pagos={this.state.pagos} event={this.event} />
+                    </View>
+                </ScrollView>
+
             </View>
         );
     }
 }
-
-
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-});

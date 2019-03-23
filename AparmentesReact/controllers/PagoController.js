@@ -1,6 +1,6 @@
 import firebase from '@firebase/app';
 const firestore = require('@firebase/firestore');
-import Hero from '../models/Hero';
+import Pago from '../models/Pago';
 import Message from '../models/Message';
 
 
@@ -11,24 +11,24 @@ firebase.initializeApp({
 })
 
 let db = firebase.firestore();
-
-export const getAllHeroes = () => {
+//Select
+export const getAllPagos = () => { //getAllHeroes
     return new Promise((resolve, rejects) => {
         let msg = new Message();
         msg.result = [];
         if (!db) {
-            msg.message = 'Database doesn\t initialize';
+            msg.message = 'No se ha establecido una conexion segura con la DB';
             resolve({ result: msg.result, message: msg.message })
         }
 
-        db.collection('heroes')
+        db.collection('pagos') //heroes
             .get()
             .then(querySnapshot => {
                 querySnapshot.forEach(doc => {
-                    let hero = new Hero(doc.id, doc.data());
-                    msg.result.push(hero);
+                    let pago = new Pago(doc.id, doc.data());
+                    msg.result.push(pago);
                 })
-                msg.message = 'Get all heroes successfully!';
+                msg.message = 'se han encontrado todos los pagos';
                 resolve({ result: msg.result, message: msg.message })
             }).catch(error => {
                 msg.message = `${error.message}`;
@@ -36,25 +36,25 @@ export const getAllHeroes = () => {
             })
     })
 }
-
-export const createHero = (hero: Hero) => {
+//Create
+export const createPago = (pago: Pago) => {
     return new Promise((resolve, reject) => {
         let msg = new Message();
-        if (!hero) {
+        if (!pago) {
             msg.result = false;
-            msg.message = 'Invalid hero input!';
+            msg.message = 'Invalid pago input!';
             resolve({ result: msg.result, message: msg.message })
         }
         if (!db) {
             msg.result = false;
-            msg.message = 'Database doesn\t initialize';
+            msg.message = 'No se ha establecido una conexion segura con la DB';
             resolve({ result: msg.result, message: msg.message })
         }
-        db.collection('heroes')
-            .add(hero.getObjectInfo())
+        db.collection('pagos') //heroes
+            .add(pago.getObjectInfo())
             .then((querySnapshot) => {
                 msg.result = true;
-                msg.message = 'Create new hero successfully!';
+                msg.message = 'Se ha registrado el pago correctamente';
                 resolve({ result: msg.result, message: msg.message })
             }).catch(error => {
                 msg.result = false;
@@ -64,39 +64,41 @@ export const createHero = (hero: Hero) => {
     })
 }
 
-const checkIfHeroExist = (heroId: string) => {
+const checkIfPagoExist = (pagoId: string) => {
     return new Promise((resolve, reject) => {
         let msg = new Message();
         if (!db) {
             msg.result = false;
-            msg.message = 'Database doesn\t initialize';
+            msg.message = 'No se ha establecido una conexion segura con la DB';
             resolve({ result: msg.result, message: msg.message })
         }
-        db.collection('heroes')
-            .doc(heroId)
+        db.collection('pagos') //pagos
+            .doc(pagoId)
             .get()
             .then(querySnapshot => {
                 msg.result = true;
-                msg.message = `Found 1 hero with id=${heroId}`;
+                msg.message = `Se ha encontrado 1 pago con este id=${pagoId}`;
                 resolve({ result: msg.result, message: msg.message })
             }).catch(error => {
                 msg.result = false;
-                msg.message = `Not found hero with id=${heroId}`;
+                msg.message = `No se ha encontrado pago con este id=${pagoId}`;
                 resolve({ result: msg.result, message: msg.message })
             })
     })
 }
-export const deleteHero = (heroId: string) => {
+
+//Delete
+export const deletePago = (pagoId: string) => { //deletePago
     return new Promise((resolve, reject) => {
         let msg = new Message();
        
         if (!db) {
             msg.result = false;
-            msg.message = 'Database doesn\t initialize';
+            msg.message = 'No se ha establecido una conexion segura con la DB';
             resolve({ result: msg.result, message: msg.message })
         }
-        checkIfHeroExist(heroId).then(({ result, message }) => {
-            //Not found hero
+     checkIfPagoExist(pagoId).then(({ result, message }) => {
+            //Not found pago
             if (!result) {
                 msg.result = false;
                 msg.message = message;
@@ -104,12 +106,12 @@ export const deleteHero = (heroId: string) => {
             }
 
             //override data with existing doc
-            db.collection('heroes')
-                .doc(heroId)
+            db.collection('pagos') //heroes
+                .doc(pagoId)
                 .delete()
                 .then(querySnapshot => {
                     msg.result = true;
-                    msg.message = 'Delete hero successfully!';
+                    msg.message = 'Eliminacion de pago conseguida!';
                     resolve({ result: msg.result, message: msg.message })
                 }).catch(error => {
                     msg.result = false;
@@ -119,22 +121,22 @@ export const deleteHero = (heroId: string) => {
         })
     })
 }
-
-export const updateHero = (hero: Hero) => {
+//Update
+export const updatePago = (pago: Pago) => { 
     return new Promise((resolve, reject) => {
         let msg = new Message();
-        if (!hero) {
+        if (!pago) {
             msg.result = false;
-            msg.message = 'Invalid hero input!';
+            msg.message = 'Invalid pago input!';
             resolve({ result: msg.result, message: msg.message })
         }
         if (!db) {
             msg.result = false;
-            msg.message = 'Database doesn\t initialize';
+            msg.message = 'No se ha establecido una conexion segura con la DB';
             resolve({ result: msg.result, message: msg.message })
         }
-        checkIfHeroExist(hero.heroId).then(({ result, message }) => {
-            //Not found hero
+     checkIfPagoExist(pago.pagoId).then(({ result, message }) => {
+            //Not found pago
             if (!result) {
                 msg.result = false;
                 msg.message = message;
@@ -142,12 +144,12 @@ export const updateHero = (hero: Hero) => {
             }
 
             //override data with existing doc
-            db.collection('heroes')
-                .doc(hero.heroId)
-                .set(hero.getObjectInfo())
+            db.collection('pagos') //pagos
+                .doc(pago.pagoId)
+                .set(pago.getObjectInfo())
                 .then(querySnapshot => {
                     msg.result = true;
-                    msg.message = 'Update hero successfully!';
+                    msg.message = 'El registro del pago ha sido actualizado!';
                     resolve({ result: msg.result, message: msg.message })
                 }).catch(error => {
                     msg.result = false;
