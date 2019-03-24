@@ -4,7 +4,6 @@
  * @flow
  */
 
-
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ToastAndroid, Keyboard, ScrollView, Alert, Linking } from 'react-native';
 import { Header, Input, SearchBar, Button } from 'react-native-elements';
@@ -12,96 +11,93 @@ import { Header, Input, SearchBar, Button } from 'react-native-elements';
 /*   ICONOS   */
 import IconF from 'react-native-vector-icons/FontAwesome';
 
-import Pago from '../models/Pago';
-import { updatePago } from '../controllers/PagoController';
 
+import Inquilino from '../models/Inquilino';
+import { createInquilino } from '../controllers/PagoController'; //createPago
 
-export default class UpdatePagoView extends Component<Props> {
+export default class CreateInquilinoView extends Component<Props> {  //CreateHeroView
 
     constructor(props: Props) {
         super(props);
 
-        let pago, event;
-        if (this.props.navigation
-            && this.props.navigation.state
-            && this.props.navigation.state.params) {
-            pago = this.props.navigation.state.params.pago;
-            event = this.props.navigation.state.params.event;
-        }
-
         this.state = {
-            pago: pago,
+            Inquilino: new Inquilino(0, { nombre: '', cedula: '',telefono: '',alquile: '',deposito: '',aptnum: '',contratonum: '',fecha: '' }),
             disableButtonCreate: true,
             disableColor: '#2B2F33',
             enableColor: '#2B2F33',
             currentButtonColor: '#2B2F33',
-            event: event,
+            event: this.props.event,
         };
     }
 
     componentWillMount() {
-        if (!this.state.pago)
+        if (!this.state.inquilino)
             return;
 
-        if (''.includes(this.state.pago.aptNum))
+        if (''.includes(this.state.inquilino.nombre))
             this.setState({ disableButtonCreate: true, currentButtonColor: this.state.disableColor });
         else this.setState({ disableButtonCreate: false, currentButtonColor: this.state.enableColor });
     }
 
-    changeName = (aptNum: string) => {
-        let pago = this.state.pago;
-        if (!pago)
+    changeName = (nombre: string) => {
+        let inquilino = this.state.inquilino;
+        if (!inquilino)
             return;
-        pago.aptNum = aptNum;
 
+        inquilino.nombre = nombre;
 
-        if (''.includes(this.state.pago.aptNum))
-            this.setState({ pago, disableButtonCreate: true, currentButtonColor: this.state.disableColor });
-        else this.setState({ pago, disableButtonCreate: false, currentButtonColor: this.state.enableColor });
+        if (''.includes(this.state.inquilino.nombre))
+            this.setState({ inquilino, disableButtonCreate: true, currentButtonColor: this.state.disableColor });
+        else this.setState({ inquilino, disableButtonCreate: false, currentButtonColor: this.state.enableColor });
     }
 
-    updatePago = () => {
-        if (!this.state.pago)
+    createInquilino = () => {
+        if (!this.state.inquilino || this.state.disableButtonCreate)
             return;
 
-        updatePago(this.state.pago)
+        createInquilino(this.state.inquilino)
             .then(({ result, message }) => {
-                ToastAndroid.show(message, ToastAndroid.SHORT);
-                if (result && this.state.event)
-                    this.state.event.emit('onUpdatePago');
+                ToastAndroid.show('Se ha registrado el inquilino', ToastAndroid.SHORT);
+                if (result) {
+                    Keyboard.dismiss();
+                    this.setState({ inquilino: new Inquilino(0, { nombre: '' }) })
+                    if (this.state.event) {
+                        this.state.event.emit('onCreateInquilino');//onCreateHero
+                    }
+                }
             })
     }
 
     render() {
-        if (!this.state.pago)
-            return <Text style={styles.generalFontSize}>Invalid pago!</Text>
+        if (!this.state.inquilino)
+            return
 
         return (
             <View style={{ backgroundColor: '#F8FBFD', flex: 1 }}>
                 <Header
                     placement="right"
-                    leftComponent={{ icon: 'arrow-back', color: '#fff', onPress: () => this.props.navigation.navigate('HomeView') }}
-                    centerComponent={{ text: 'Registro de Pago', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+                    leftComponent={{ icon: 'arrow-back', color: '#fff', onPress: () => this.props.navigation.navigate('InquilinoViewHome') }}
+                    centerComponent={{ text: 'Registro de Inquilino', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
                     containerStyle={{ backgroundColor: '#2B2F33' }}
                     leftContainerStyle={{ marginLeft: 12 }}
                     centerContainerStyle={{ marginRight: 80 }}
                 />
                 <Input
-                    onChangeText={(text) => this.changeName(text)} value={this.state.pago.aptNum}
-                    onSubmitEditing={this.updatePago}
-                    placeholder='Numero de Apartamento'
+                    onChangeText={(text) => this.changeName(text)} value={this.state.inquilino.nombre}
+                    onSubmitEditing={this.createInquilino}
+                    placeholder='Nombre del inquilino'
                     leftIconContainerStyle={{ marginRight: 15 }}
                     inputContainerStyle={{ marginTop: 45, width: 330, marginLeft: 30 }}
                     leftIcon={
                         <IconF
                             name='user' size={20} color='black' marginRight={4} />}
                 />
-                <View style={styles.container}>
-                    <TouchableOpacity
-                        style={[styles.buttonContainer, { backgroundColor: this.state.currentButtonColor }]}
-                        onPress={this.updatePago}>
-                        <Text style={[styles.buttonText, styles.generalFontSize]}>Registrar Pago</Text>
-                    </TouchableOpacity>
+                 <View style={styles.container}>
+               <TouchableOpacity 
+                    style={[styles.buttonContainer, { backgroundColor: this.state.currentButtonColor }]}
+                    onPress={this.createInquilino}>
+                    <Text style={[styles.buttonText, styles.generalFontSize]}>Registrar Inquilino</Text>
+                </TouchableOpacity>
                 </View>
             </View>
         );

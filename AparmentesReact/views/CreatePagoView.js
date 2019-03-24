@@ -39,12 +39,14 @@ export default class CreatePagoView extends Component<Props> {  //CreateHeroView
         else this.setState({ disableButtonCreate: false, currentButtonColor: this.state.enableColor });
     }
 
-    changeName = (aptnum: string) => {
+    changeName = (aptNum: string) => {
         let pago = this.state.pago;
+       
         if (!pago)
             return;
 
-        pago.aptNum = aptnum;
+        pago.aptNum = aptNum;
+      
 
         if (''.includes(this.state.pago.aptNum))
             this.setState({ pago, disableButtonCreate: true, currentButtonColor: this.state.disableColor });

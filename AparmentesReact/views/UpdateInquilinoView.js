@@ -12,25 +12,25 @@ import { Header, Input, SearchBar, Button } from 'react-native-elements';
 /*   ICONOS   */
 import IconF from 'react-native-vector-icons/FontAwesome';
 
-import Pago from '../models/Pago';
-import { updatePago } from '../controllers/PagoController';
+import Inquilino from '../models/Inquilino';
+import { updateInquilino } from '../controllers/PagoController';
 
 
-export default class UpdatePagoView extends Component<Props> {
+export default class UpdateInquilinoView extends Component<Props> {
 
     constructor(props: Props) {
         super(props);
 
-        let pago, event;
+        let inquilino, event;
         if (this.props.navigation
             && this.props.navigation.state
             && this.props.navigation.state.params) {
-            pago = this.props.navigation.state.params.pago;
+            inquilino = this.props.navigation.state.params.inquilino;
             event = this.props.navigation.state.params.event;
         }
 
         this.state = {
-            pago: pago,
+            inquilino: inquilino,
             disableButtonCreate: true,
             disableColor: '#2B2F33',
             enableColor: '#2B2F33',
@@ -40,55 +40,55 @@ export default class UpdatePagoView extends Component<Props> {
     }
 
     componentWillMount() {
-        if (!this.state.pago)
+        if (!this.state.inquilino)
             return;
 
-        if (''.includes(this.state.pago.aptNum))
+        if (''.includes(this.state.inquilino.nombre))
             this.setState({ disableButtonCreate: true, currentButtonColor: this.state.disableColor });
         else this.setState({ disableButtonCreate: false, currentButtonColor: this.state.enableColor });
     }
 
-    changeName = (aptNum: string) => {
-        let pago = this.state.pago;
-        if (!pago)
+    changeName = (nombre: string) => {
+        let inquilino = this.state.inquilino;
+        if (!inquilino)
             return;
-        pago.aptNum = aptNum;
+        inquilino.nombre = nombre;
 
 
-        if (''.includes(this.state.pago.aptNum))
-            this.setState({ pago, disableButtonCreate: true, currentButtonColor: this.state.disableColor });
-        else this.setState({ pago, disableButtonCreate: false, currentButtonColor: this.state.enableColor });
+        if (''.includes(this.state.inquilino.nombre))
+            this.setState({ inquilino, disableButtonCreate: true, currentButtonColor: this.state.disableColor });
+        else this.setState({ inquilino, disableButtonCreate: false, currentButtonColor: this.state.enableColor });
     }
 
-    updatePago = () => {
-        if (!this.state.pago)
+    updateInquilino = () => {
+        if (!this.state.inquilino)
             return;
 
-        updatePago(this.state.pago)
+            updateInquilino(this.state.inquilino)
             .then(({ result, message }) => {
                 ToastAndroid.show(message, ToastAndroid.SHORT);
                 if (result && this.state.event)
-                    this.state.event.emit('onUpdatePago');
+                    this.state.event.emit('onUpdateInquilino');
             })
     }
 
     render() {
-        if (!this.state.pago)
-            return <Text style={styles.generalFontSize}>Invalid pago!</Text>
+        if (!this.state.inquilino)
+            return <Text style={styles.generalFontSize}>Invalid Inquilino!</Text>
 
         return (
             <View style={{ backgroundColor: '#F8FBFD', flex: 1 }}>
                 <Header
                     placement="right"
-                    leftComponent={{ icon: 'arrow-back', color: '#fff', onPress: () => this.props.navigation.navigate('HomeView') }}
-                    centerComponent={{ text: 'Registro de Pago', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
+                    leftComponent={{ icon: 'arrow-back', color: '#fff', onPress: () => this.props.navigation.navigate('InquilinoViewHome') }}
+                    centerComponent={{ text: 'Registro de Inquilino', style: { color: '#fff', fontSize: 18, fontWeight: 'bold' } }}
                     containerStyle={{ backgroundColor: '#2B2F33' }}
                     leftContainerStyle={{ marginLeft: 12 }}
                     centerContainerStyle={{ marginRight: 80 }}
                 />
                 <Input
-                    onChangeText={(text) => this.changeName(text)} value={this.state.pago.aptNum}
-                    onSubmitEditing={this.updatePago}
+                    onChangeText={(text) => this.changeName(text)} value={this.state.inquilino.nombre}
+                    onSubmitEditing={this.updateInquilino}
                     placeholder='Numero de Apartamento'
                     leftIconContainerStyle={{ marginRight: 15 }}
                     inputContainerStyle={{ marginTop: 45, width: 330, marginLeft: 30 }}
@@ -99,8 +99,8 @@ export default class UpdatePagoView extends Component<Props> {
                 <View style={styles.container}>
                     <TouchableOpacity
                         style={[styles.buttonContainer, { backgroundColor: this.state.currentButtonColor }]}
-                        onPress={this.updatePago}>
-                        <Text style={[styles.buttonText, styles.generalFontSize]}>Registrar Pago</Text>
+                        onPress={this.updateInquilino}>
+                        <Text style={[styles.buttonText, styles.generalFontSize]}>Registrar inquilino</Text>
                     </TouchableOpacity>
                 </View>
             </View>
